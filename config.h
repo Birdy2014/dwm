@@ -106,9 +106,9 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
     // system
-    { MODKEY|Mod1Mask|ControlMask   XK_s,      spawn,         SHCMD("systemctl poweroff") },
-    { MODKEY|Mod1Mask|ControlMask   XK_r,      spawn,         SHCMD("systemctl reboot") },
-    { MODKEY|Mod1Mask|ControlMask   XK_l,      spawn,         SHCMD("light-locker-command -l") },
+    { MODKEY|Mod1Mask|ControlMask,  XK_s,      spawn,         SHCMD("systemctl poweroff") },
+    { MODKEY|Mod1Mask|ControlMask,  XK_r,      spawn,         SHCMD("systemctl reboot") },
+    { MODKEY|Mod1Mask|ControlMask,  XK_l,      spawn,         SHCMD("light-locker-command -l") },
 };
 
 /* button definitions */
