@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=dwm
+Comment=The window manager which sucks less
+Exec=dwm
+Type=Application
