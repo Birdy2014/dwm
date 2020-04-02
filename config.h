@@ -67,7 +67,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_w,      spawn,          SHCMD("firefox -p default-release") },
 	{ MODKEY,                       XK_y,      spawn,          SHCMD("firefox -p Youtube") },
 	{ MODKEY,                       XK_n,      spawn,          SHCMD("st -e ranger") },
@@ -81,7 +80,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
+	{ MODKEY,                       XK_q,      killclient,     {0} },
     // layouts
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -106,6 +105,10 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+    // system
+    { MODKEY|Mod1Mask|ControlMask   XK_s,      spawn,         SHCMD("systemctl poweroff") },
+    { MODKEY|Mod1Mask|ControlMask   XK_r,      spawn,         SHCMD("systemctl reboot") },
+    { MODKEY|Mod1Mask|ControlMask   XK_l,      spawn,         SHCMD("light-locker-command -l") },
 };
 
 /* button definitions */
