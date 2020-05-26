@@ -7,8 +7,11 @@ static const unsigned int gappx     = 6;        /* gaps between windows */
 static const unsigned int snap      = 0;        /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = {
+                                        "Mononoki Nerd Font:size=10",
+                                        "monospace:size=10"
+                                        };
+static const char dmenufont[]       = "Mononoki Nerd Font:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -29,9 +32,10 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-    { "firefox",  NULL,       NULL,       1 << 0,       0,           0 },
+    //{ "firefox",  NULL,       NULL,       1 << 0,       0,           0 },
     { "Steam",    NULL,       NULL,       1 << 2,       0,           0 },
     { "discord",  NULL,       NULL,       1 << 0,       0,           1 },
+    { "code-oss", NULL,       NULL,       1 << 1,       0,           0 },
 };
 
 /* layout(s) */
@@ -71,6 +75,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_w,                     spawn,          SHCMD("firefox -p default-release") },
 	{ MODKEY,                       XK_y,                     spawn,          SHCMD("firefox -p Youtube") },
 	{ MODKEY,                       XK_n,                     spawn,          SHCMD("st -e ranger") },
+    { MODKEY,                       XK_c,                     spawn,          SHCMD("code") },
     // tiling
 	{ MODKEY|ShiftMask,             XK_j,                     rotatestack,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,                     rotatestack,    {.i = -1 } },
