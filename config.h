@@ -52,6 +52,8 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "|M|",      centeredmaster },
+	{ ">M>",      centeredfloatingmaster },
 };
 
 /* key definitions */
@@ -85,8 +87,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_k,                     rotatestack,    {.i = -1 } },
 	{ MODKEY,                       XK_j,                     focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,                     focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,                     incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_u,                     incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_plus,                  incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_minus,                 incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,                     setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,                     setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return,                zoom,           {0} },
@@ -95,6 +97,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,                     setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,                     setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,                     setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_u,                     setlayout,      {.v = &layouts[3]} },
+	{ MODKEY,                       XK_o,                     setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_space,                 togglefloating, {0} },
     // monitors
 	{ MODKEY,                       XK_comma,                 focusmon,       {.i = -1 } },
