@@ -244,6 +244,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void initlayout();
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 
@@ -2137,6 +2138,7 @@ updategeom(void)
 					m->my = m->wy = unique[i].y_org;
 					m->mw = m->ww = unique[i].width;
 					m->mh = m->wh = unique[i].height;
+					initlayout(m);
 					updatebarpos(m);
 				}
 		} else { /* less monitors available nn < n */
@@ -2525,6 +2527,18 @@ main(int argc, char *argv[])
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
+}
+
+void
+initlayout(Monitor *m)
+{
+	if ((float)m->mw / (float)m->mh > 16.0f / 9.0f)
+		m->lt[0] = &layouts[3];
+	else
+		m->lt[0] = &layouts[0];
+	for (int tag = 0; tag <= LENGTH(tags); tag++)
+		m->pertag->ltidxs[tag][0] = m->lt[0];
+	strncpy(m->ltsymbol, m->lt[0]->symbol, sizeof m->ltsymbol);
 }
 
 void
