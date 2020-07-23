@@ -40,6 +40,7 @@ static const Rule rules[] = {
     { "Thunderbird", NULL,    NULL,           1 << 5,       0,            0,         0,          0 },
     { "st-256color", NULL,    NULL,           NULL,         0,            1,         0,          -1 },
     { NULL,          NULL,    "Event Tester", NULL,         0,            0,         1,          -1 },
+	{ "steam_app",   NULL,    "Origin",       1 << 4,       1,            0,         0,          -1 },
 };
 
 /* layout(s) */
@@ -121,7 +122,7 @@ static Key keys[] = {
     // system
     { MODKEY|Mod1Mask|ControlMask,  XK_s,                     spawn,         SHCMD("systemctl poweroff") },
     { MODKEY|Mod1Mask|ControlMask,  XK_r,                     spawn,         SHCMD("systemctl reboot") },
-    { MODKEY|Mod1Mask|ControlMask,  XK_l,                     spawn,         SHCMD("light-locker-command -l") },
+    { MODKEY|Mod1Mask|ControlMask,  XK_l,                     spawn,         SHCMD("loginctl lock-session") },
 	{ MODKEY|Mod1Mask|ControlMask,  XK_q,                     quit,          {0} },
     // audio and backlight
     { 0,                            XF86XK_AudioMute,         spawn,         SHCMD("pamixer -t && dwm-statusbar refresh") },
