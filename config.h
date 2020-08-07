@@ -2,7 +2,7 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 0;        /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
@@ -25,7 +25,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "7", "8", "9" };
+static const char *tags[] = { "", "", "", "", "", "", "ﭮ", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -33,14 +33,15 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class         instance title           tags mask     isfloating    isterminal noswallow   monitor */
-    { "firefox",     NULL,    NULL,           1 << 1,       0,            0,         0,          -1 },
-    { "Steam",       NULL,    NULL,           1 << 4,       0,            0,         0,          0 },
-    { "discord",     NULL,    NULL,           1 << 0,       0,            0,         0,          1 },
-    { "code-oss",    NULL,    NULL,           1 << 2,       0,            0,         0,          0 },
-    { "Thunderbird", NULL,    NULL,           1 << 5,       0,            0,         0,          0 },
-    { "st-256color", NULL,    NULL,           NULL,         0,            1,         0,          -1 },
-    { NULL,          NULL,    "Event Tester", NULL,         0,            0,         1,          -1 },
-	{ "steam_app",   NULL,    "Origin",       1 << 4,       1,            0,         0,          -1 },
+	{ "firefox",        NULL,    NULL,           1 << 1,       0,            0,         0,          -1 },
+	{ "Steam",          NULL,    NULL,           1 << 4,       0,            0,         0,          0 },
+	{ "discord",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
+	{ "Element",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
+	{ "code-oss",       NULL,    NULL,           1 << 2,       0,            0,         0,          0 },
+	{ "Thunderbird",    NULL,    NULL,           1 << 5,       0,            0,         0,          0 },
+	{ "st-256color",    NULL,    NULL,           NULL,         0,            1,         0,          -1 },
+	{ NULL,             NULL,    "Event Tester", NULL,         0,            0,         1,          -1 },
+	{ "steam_app",      NULL,    "Origin",       1 << 4,       1,            0,         0,          -1 },
 };
 
 /* layout(s) */
