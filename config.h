@@ -2,11 +2,11 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 0;        /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
-static const int showbar            = 1;        /* 0 means no bar */
+static const int showbar            = 0;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = {
                                         "Mononoki Nerd Font:size=10",
@@ -18,14 +18,16 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+static const char col_green[]       = "#10893E";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_green, col_green  },
 };
 
 /* tagging */
 static const char *tags[] = { "", "", "", "", "", "", "ﭮ", "8", "9" };
+static const int deflt[] = { 1, 1,  0,   0,   0,   0,   0,   0,   0,   0  };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -33,7 +35,6 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class         instance title           tags mask     isfloating    isterminal noswallow   monitor */
-	{ "firefox",        NULL,    NULL,           1 << 1,       0,            0,         0,          -1 },
 	{ "Steam",          NULL,    NULL,           1 << 4,       0,            0,         0,          0 },
 	{ "discord",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
 	{ "Element",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
@@ -65,6 +66,7 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+#define HOLDKEY XK_Super_L
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -80,6 +82,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,                     spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return,                spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,                     togglebar,      {0} },
+	{ 0,                            HOLDKEY,                  holdbar,        {0} },
 	{ MODKEY,                       XK_w,                     spawn,          SHCMD("firefox -p default-release") },
 	{ MODKEY,                       XK_y,                     spawn,          SHCMD("firefox -p Youtube") },
 	{ MODKEY,                       XK_n,                     spawn,          SHCMD("st -e ranger") },
