@@ -75,6 +75,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+#include "movestack.c"
 static Key keys[] = {
 	/* modifier                     key                       function        argument */
     // applications
@@ -86,8 +87,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_n,                     spawn,          SHCMD("st -e ranger") },
     { MODKEY,                       XK_c,                     spawn,          SHCMD("code") },
     // tiling
-	{ MODKEY|ShiftMask,             XK_j,                     rotatestack,    {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,                     rotatestack,    {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,                     movestack,      {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,                     movestack,      {.i = -1 } },
 	{ MODKEY,                       XK_j,                     focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,                     focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_plus,                  incnmaster,     {.i = +1 } },
