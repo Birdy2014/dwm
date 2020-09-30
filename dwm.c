@@ -22,6 +22,7 @@
  */
 #include <errno.h>
 #include <locale.h>
+#include <math.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -243,6 +244,7 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
+static void masterandgrid(Monitor *m);
 
 static pid_t getparentprocess(pid_t p);
 static int isdescprocess(pid_t p, pid_t c);
@@ -2571,4 +2573,40 @@ centeredfloatingmaster(Monitor *m)
 		       m->wh - (2*c->bw), 0);
 		tx += WIDTH(c);
 	}
+}
+
+void
+masterandgrid(Monitor *m)
+{
+	unsigned int i, n, h, mw, my, ty, ns, sw;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww;
+	ns = n - m->nmaster;
+	sw = (m->ww - mw) / 2;
+
+	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+			my += HEIGHT(c);
+		} else if (ns <= 2) { // Normal stack
+			h = (m->wh - ty) / (n - i);
+			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+			ty += HEIGHT(c);
+		} else if ((i - m->nmaster) % 2 == 0) { // Grid left
+			h = (m->wh - ty) / ceil((n - i) / 2.0);
+			resize(c, m->wx + mw, m->wy + ty, i == n - 1 ? m->ww - mw : sw, h, 0);
+		} else { // Grid right
+			h = (m->wh - ty) / ceil((n + 1 - i) / 2.0);
+			resize(c, m->wx + mw + sw, m->wy + ty, sw, h, 0);
+			ty += HEIGHT(c);
+		}
 }
