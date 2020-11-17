@@ -186,6 +186,7 @@ static void grabkeys(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
+static void closewindow(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
@@ -1115,6 +1116,21 @@ killclient(const Arg *arg)
 		XSync(dpy, False);
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
+	}
+}
+
+void
+closewindow(const Arg *arg)
+{
+	if (!selmon->sel)
+		return;
+	unsigned int newtags = selmon->sel->tags ^ selmon->tagset[selmon->seltags];
+	if (newtags != 0) {
+		selmon->sel->tags = newtags;
+		focus(NULL);
+		arrange(selmon);
+	} else {
+		killclient(arg);
 	}
 }
 
