@@ -346,7 +346,7 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : (c->mon->tagset[c->mon->seltags] ? c->mon->tagset[c->mon->seltags] : 1);
 }
 
 int
@@ -1594,7 +1594,7 @@ sendmon(Client *c, Monitor *m)
 	detach(c);
 	detachstack(c);
 	c->mon = m;
-	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
+	c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1); /* assign tags of target monitor */
 	attach(c);
 	attachstack(c);
 	focus(NULL);
