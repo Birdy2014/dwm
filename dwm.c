@@ -252,7 +252,7 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
-static void masterandgrid(Monitor *m);
+static void dwindle(Monitor *mon);
 
 static pid_t getparentprocess(pid_t p);
 static int isdescprocess(pid_t p, pid_t c);
@@ -2547,42 +2547,6 @@ main(int argc, char *argv[])
 }
 
 void
-masterandgrid(Monitor *m)
-{
-	unsigned int i, n, h, mw, my, ty, ns, sw;
-	Client *c;
-
-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
-
-	if (n > m->nmaster)
-		mw = m->nmaster ? m->ww * m->mfact : 0;
-	else
-		mw = m->ww;
-	ns = n - m->nmaster;
-	sw = (m->ww - mw) / 2;
-
-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-		if (i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-			my += HEIGHT(c);
-		} else if (ns <= 2) { // Normal stack
-			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-			ty += HEIGHT(c);
-		} else if ((i - m->nmaster) % 2 == 0) { // Grid left
-			h = (m->wh - ty) / ceil((n - i) / 2.0);
-			resize(c, m->wx + mw, m->wy + ty, i == n - 1 ? m->ww - mw : sw, h, 0);
-		} else { // Grid right
-			h = (m->wh - ty) / ceil((n + 1 - i) / 2.0);
-			resize(c, m->wx + mw + sw, m->wy + ty, sw, h, 0);
-			ty += HEIGHT(c);
-		}
-}
-
-void
 centeredmaster(Monitor *m)
 {
 	unsigned int i, n, h, mw, mx, my, oty, ety, tw;
@@ -2720,5 +2684,60 @@ centeredfloatingmaster(Monitor *m)
 		if(tx + WIDTH(c) < m->mw)
 			tx += WIDTH(c);
 		sfacts -= c->cfact;
+	}
+}
+
+void
+dwindle(Monitor *mon)
+{
+	unsigned int i, n, nx, ny, nw, nh, ow, oh, my = 0;
+	float mfacts = 0;
+	Client *c;
+
+	for(n = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next), n++)
+		if (n < mon->nmaster)
+			mfacts += c->cfact;
+	if(n == 0)
+		return;
+
+	nx = mon->wx;
+	ny = mon->wy;
+	nw = mon->ww;
+	nh = mon->wh;
+
+	for(i = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next)) {
+		if(n > 1 && mon->nmaster > 0 && i == mon->nmaster) {
+			// reset values for first client in stack
+			nw = mon->ww * (1 - mon->mfact);
+			nh = mon->wh;
+			ny = mon->wy;
+		}
+		ow = nw;
+		oh = nh;
+		if(n > 1 && i < mon->nmaster) {
+			// master
+			// TODO kaputt für mehrere master
+			nw = mon->ww * mon->mfact;
+			nh = (mon->wh - my) * (c->cfact / mfacts);
+			nx = mon->wx;
+			ny = mon->wy + my;
+			my += nh;
+			mfacts -= c->cfact;
+		} else if(n > 1 && i < n - 1) {
+			// stack
+			if((i - mon->nmaster) % 2)
+				nw *= (c->cfact / 2);
+			else
+				nh *= (c->cfact / 2);
+		}
+		resize(c, nx, ny, nw - 2 * c->bw, nh - 2 * c->bw, False);
+		if((i - mon->nmaster) % 2) {
+			nx += nw;
+			nw = ow - nw;
+		} else {
+			ny += nh;
+			nh = oh - nh;
+		}
+		i++;
 	}
 }
