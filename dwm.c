@@ -1703,7 +1703,7 @@ void setcfact(const Arg *arg) {
 	f = arg->f + c->cfact;
 	if(arg->f == 0.0)
 		f = 1.0;
-	else if(f < 0.25 || f > 4.0)
+	else if(f < 0.2 || f > 5.0)
 		return;
 	c->cfact = f;
 	arrange(selmon);
@@ -1743,7 +1743,10 @@ setup(void)
 	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
 		die("no fonts could be loaded.");
 	lrpad = drw->fonts->h;
-	bh = drw->fonts->h + 2;
+	for (struct Fnt *f = drw->fonts; f != NULL; f = f->next)
+		if (bh < f->h)
+			bh = f->h;
+	bh += 2;
 	updategeom();
 	/* init atoms */
 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);

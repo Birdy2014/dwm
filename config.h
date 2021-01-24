@@ -46,6 +46,7 @@ static const Rule rules[] = {
 	{ "st-256color",    NULL,    NULL,           NULL,         0,            1,         0,          -1 },
 	{ NULL,             NULL,    "Event Tester", NULL,         0,            0,         1,          -1 },
 	{ "steam_app",      NULL,    "Origin",       1 << 4,       1,            0,         0,          -1 },
+    { "zoom",           0,       0,              0,            1,            0,         0,          -1 },
 };
 
 /* layout(s) */
