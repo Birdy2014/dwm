@@ -14,18 +14,23 @@ static const char *fonts[]          = {
                                         "Jetbrains Mono:size=10",
                                         "monospace:size=10"
                                         };
-static const char dmenufont[]       = "Jetbrains Mono:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char col_green[]       = "#10893E";
+static const char dmenufont[]         = "Jetbrains Mono:size=10";
+static const char col_gray1[]         = "#222222";
+static const char col_gray2[]         = "#444444";
+static const char col_gray3[]         = "#bbbbbb";
+static const char col_gray4[]         = "#eeeeee";
+static const char col_cyan[]          = "#005577";
+static const char col_green[]         = "#10893E";
+static const char col_gruvbox_dark0[] = "#282828";
+static const char col_gruvbox_dark2[] = "#504945";
+static const char col_gruvbox_dark3[] = "#665c54";
+static const char col_gruvbox_dark4[] = "#7c6f64";
+static const char col_gruvbox_green[] = "#98971a";
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm]   = { col_gray3, col_gray1, col_gray2  },
-	[SchemeHidden] = { col_gray3, col_gray1, col_cyan   },
-	[SchemeSel]    = { col_gray4, col_green, col_green  },
+	/*                 fg         bg                 border   */
+	[SchemeNorm]   = { col_gray3, col_gruvbox_dark0, col_gray2  },
+	[SchemeHidden] = { col_gray3, col_gray1,         col_cyan   },
+	[SchemeSel]    = { col_gray4, col_gruvbox_dark2, col_gruvbox_green  },
 };
 
 /* tagging */
@@ -38,15 +43,16 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class         instance title           tags mask     isfloating    isterminal noswallow   monitor */
-	{ "Steam",          NULL,    NULL,           1 << 4,       0,            0,         0,          0 },
-	{ "discord",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
-	{ "Element",        NULL,    NULL,           1 << 6,       0,            0,         0,          -1 },
-	{ "code-oss",       NULL,    NULL,           1 << 2,       0,            0,         0,          0 },
-	{ "Thunderbird",    NULL,    NULL,           1 << 5,       0,            0,         0,          0 },
-	{ "st-256color",    NULL,    NULL,           NULL,         0,            1,         0,          -1 },
-	{ NULL,             NULL,    "Event Tester", NULL,         0,            0,         1,          -1 },
-	{ "steam_app",      NULL,    "Origin",       1 << 4,       1,            0,         0,          -1 },
-    { "zoom",           0,       0,              0,            1,            0,         0,          -1 },
+	{ "Steam",          0,    0,              1 << 4,       0,            0,         0,          0 },
+	{ "discord",        0,    0,              1 << 6,       0,            0,         0,          -1 },
+	{ "Element",        0,    0,              1 << 6,       0,            0,         0,          -1 },
+	{ "code-oss",       0,    0,              1 << 2,       0,            0,         0,          0 },
+	{ "Thunderbird",    0,    0,              1 << 5,       0,            0,         0,          0 },
+	{ "st-256color",    0,    0,              0,            0,            1,         0,          -1 },
+	{ 0,                0,    "Event Tester", 0,            0,            0,         1,          -1 },
+	{ "steam_app",      0,    "Origin",       1 << 4,       1,            0,         0,          -1 },
+	{ "zoom",           0,    0,              0,            1,            0,         0,          -1 },
+	{ "Birdy3d",        0,    0,              0,            1,            0,         1,          -1 },
 };
 
 /* layout(s) */
@@ -57,7 +63,7 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "><>",      layout_float },
 	{ "[M]",      monocle },
 	{ "|M|",      centeredmaster },
 	{ ">M>",      centeredfloatingmaster },
