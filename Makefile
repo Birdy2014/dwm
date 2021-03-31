@@ -1,40 +1,50 @@
 # dwm - dynamic window manager
 # See LICENSE file for copyright and license details.
 
-include config.mk
+# dwm version
+VERSION = 6.2
 
-SRC = drw.c dwm.c util.c
-OBJ = ${SRC:.c=.o}
+# Customize below to fit your system
 
-all: options dwm
+# paths
+PREFIX = /usr/local
+MANPREFIX = ${PREFIX}/share/man
 
-options:
-	@echo dwm build options:
-	@echo "CFLAGS   = ${CFLAGS}"
-	@echo "LDFLAGS  = ${LDFLAGS}"
-	@echo "CC       = ${CC}"
+X11INC = /usr/X11R6/include
+X11LIB = /usr/X11R6/lib
 
-.c.o:
-	${CC} -c ${CFLAGS} $<
+# freetype
+FREETYPELIBS = -lfontconfig -lXft
+FREETYPEINC = /usr/include/freetype2
+# OpenBSD (uncomment)
+#FREETYPEINC = ${X11INC}/freetype2
 
-${OBJ}: config.h config.mk
+# includes and libs
+INCS = -I${X11INC} -I${FREETYPEINC}
+LIBS = -L${X11LIB} -lX11 -lXinerama ${FREETYPELIBS} -lX11-xcb -lxcb -lxcb-res -lm
 
-config.h:
-	cp config.def.h $@
+# flags
+CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 -DVERSION=\"${VERSION}\"
+#CFLAGS   = -g -std=c99 -pedantic -Wall -O0 ${INCS} ${CPPFLAGS}
+CFLAGS   = -std=c18 -pedantic -Wall -Wno-deprecated-declarations -Os ${INCS} ${CPPFLAGS} -g
+LDFLAGS  = ${LIBS}
 
-dwm: ${OBJ}
-	${CC} -o $@ ${OBJ} ${LDFLAGS}
+# Solaris
+#CFLAGS = -fast ${INCS} -DVERSION=\"${VERSION}\"
+#LDFLAGS = ${LIBS}
+
+# compiler and linker
+CC = gcc
+
+SRC = drw.c dwm.c util.c layouts.c config.c
+
+all: dwm
+
+dwm: ${SRC}
+	${CC} -o $@ ${SRC} ${LDFLAGS} ${CFLAGS}
 
 clean:
-	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
-
-dist: clean
-	mkdir -p dwm-${VERSION}
-	cp -R LICENSE Makefile README config.def.h config.mk\
-		dwm.1 drw.h util.h ${SRC} dwm.png transient.c dwm-${VERSION}
-	tar -cf dwm-${VERSION}.tar dwm-${VERSION}
-	gzip dwm-${VERSION}.tar
-	rm -rf dwm-${VERSION}
+	rm -f dwm
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
@@ -52,4 +62,4 @@ uninstall:
 		${DESTDIR}${MANPREFIX}/man1/dwm.1\
 		${DESTDIR}${PREFIX}/share/xsessions/dwm.desktop
 
-.PHONY: all options clean dist install uninstall
+.PHONY: all clean dist install uninstall
