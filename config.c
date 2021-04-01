@@ -37,6 +37,7 @@ const char *colors[][3]      = {
 	[SchemeSel]    = { col_gray4, col_gruvbox_dark2, col_gruvbox_green  },
 };
 const int ncolors = LENGTH(colors);
+const char *separator = "|";
 
 /* tagging */
 const char *tags[] = { "", "", "", "", "", "", "", "8", "9" };

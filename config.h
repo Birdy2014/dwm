@@ -28,6 +28,7 @@ extern const char col_gruvbox_dark4[];
 extern const char col_gruvbox_green[];
 extern const char *colors[][3];
 extern const int ncolors;
+extern const char *separator;
 
 /* tagging */
 extern const char *tags[];

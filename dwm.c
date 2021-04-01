@@ -299,7 +299,7 @@ buttonpress(XEvent *e)
 					if (!ISVISIBLE(c))
 						continue;
 					else
-						x += TEXTW(c->name);
+						x += TEXTW(c->name) + TEXTW(separator);
 				} while (ev->x > x && (c = c->next));
 
 				click = ClkWinTitle;
@@ -582,6 +582,7 @@ drawbar(Monitor *m)
 		drw_text(drw, m->ww - sw, 0, sw, bh, 0, stext, 0);
 	}
 
+    // Find out on which tags are windows
 	for (c = m->clients; c; c = c->next) {
 		if (ISVISIBLE(c))
 			n++;
@@ -589,6 +590,7 @@ drawbar(Monitor *m)
 		if (c->isurgent)
 			urg |= c->tags;
 	}
+    // Draw tags
 	x = 0;
 	for (i = 0; i < ntags; i++) {
 		w = TEXTW(tags[i]);
@@ -600,10 +602,12 @@ drawbar(Monitor *m)
 				urg & 1 << i);
 		x += w;
 	}
+    // Draw layout symbol
 	w = blw = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeNorm]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
+    // Draw window names
 	if ((w = m->ww - sw - x) > bh) {
 		if (n > 0 && m->pertag->layout[m->pertag->curtag]->arrange != layout_float) {
 			if (m->sel) {
@@ -629,6 +633,7 @@ drawbar(Monitor *m)
 			if (i > 0)
 				mw += ew / i;
 
+            i = 0;
 			for (c = m->clients; c; c = c->next) {
 				if (!ISVISIBLE(c))
 					continue;
@@ -639,8 +644,16 @@ drawbar(Monitor *m)
 					drw_text(drw, x, 0, tw, bh, lrpad / 2, c->name, 0);
 				if (c->isfloating)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
+
+				drw_setscheme(drw, scheme[SchemeNorm]);
+                if (i < n - 1) {
+                    drw_text(drw, x + tw, 0, tw, bh, lrpad / 2, separator, 0);
+                    x += TEXTW(separator);
+                    w -= TEXTW(separator);
+                }
 				x += tw;
 				w -= tw;
+                i++;
 			}
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
