@@ -310,6 +310,8 @@ buttonpress(XEvent *e)
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
 		restack(selmon);
+        if (c->isfloating || selmon->pertag->layout[selmon->pertag->curtag]->arrange == &layout_float)
+            XRaiseWindow(dpy, c->win);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
 	}
@@ -734,8 +736,12 @@ focusClientArg(const Arg *arg)
 	if (!arg->v)
 		return;
 
-	focus((Client*)arg->v);
+    Client *c = (Client*)arg->v;
+
+	focus(c);
 	restack(selmon);
+    if (c->isfloating || selmon->pertag->layout[selmon->pertag->curtag]->arrange == &layout_float)
+        XRaiseWindow(dpy, c->win);
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -785,6 +791,8 @@ focusstack(const Arg *arg)
 	if (c) {
 		focus(c);
 		restack(selmon);
+        if (c->isfloating || selmon->pertag->layout[selmon->pertag->curtag]->arrange == &layout_float)
+            XRaiseWindow(dpy, c->win);
 	}
 }
 
@@ -1364,9 +1372,7 @@ restack(Monitor *m)
 	drawbar(m);
 	if (!m->sel)
 		return;
-	if (m->sel->isfloating || !m->pertag->layout[m->pertag->curtag]->arrange)
-		XRaiseWindow(dpy, m->sel->win);
-	if (m->pertag->layout[m->pertag->curtag]->arrange) {
+	if (m->pertag->layout[m->pertag->curtag]->arrange != &layout_float) {
 		wc.stack_mode = Below;
 		wc.sibling = m->barwin;
 		for (c = m->stack; c; c = c->snext)
