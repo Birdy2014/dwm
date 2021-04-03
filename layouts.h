@@ -8,5 +8,6 @@ void centeredmaster(Monitor *m);
 void centeredfloatingmaster(Monitor *m);
 void dwindle(Monitor *mon);
 void layout_float(Monitor *mon);
+void monocle(Monitor *m);
 
 #endif

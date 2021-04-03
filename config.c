@@ -19,7 +19,7 @@ const char *fonts[]          = {
                                         };
 const int nfonts = LENGTH(fonts);
 const char dmenufont[]         = "Jetbrains Mono:size=10";
-const char col_gray1[]         = "#222222";
+const char col_gray1[]         = "#202020";
 const char col_gray2[]         = "#444444";
 const char col_gray3[]         = "#bbbbbb";
 const char col_gray4[]         = "#eeeeee";
@@ -31,10 +31,10 @@ const char col_gruvbox_dark3[] = "#665c54";
 const char col_gruvbox_dark4[] = "#7c6f64";
 const char col_gruvbox_green[] = "#98971a";
 const char *colors[][3]      = {
-	/*                 fg         bg                 border   */
-	[SchemeNorm]   = { col_gray3, col_gruvbox_dark0, col_gray2  },
-	[SchemeHidden] = { col_gray3, col_gray1,         col_cyan   },
-	[SchemeSel]    = { col_gray4, col_gruvbox_dark2, col_gruvbox_green  },
+	/*                 fg                 bg                 border   */
+	[SchemeNorm]   = { col_gray3,         col_gruvbox_dark0, col_gray2  },
+	[SchemeHidden] = { col_gruvbox_dark4, col_gray1,         col_cyan   },
+	[SchemeSel]    = { col_gray4,         col_gruvbox_dark2, col_gruvbox_green  },
 };
 const int ncolors = LENGTH(colors);
 const char *separator = "|";
@@ -169,6 +169,7 @@ const Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button1,        focusClientArg, {0} },
+	{ ClkWinTitle,          0,              Button3,        togglehidden,   {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },

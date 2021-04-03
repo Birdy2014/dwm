@@ -548,7 +548,7 @@ detachstack(Client *c)
 	*tc = c->snext;
 
 	if (c == c->mon->sel) {
-		for (t = c->mon->stack; t && !ISVISIBLE(t); t = t->snext);
+		for (t = c->mon->stack; t && (!ISVISIBLE(t) || ISHIDDEN(t)); t = t->snext);
 		c->mon->sel = t;
 	}
 }
@@ -641,7 +641,7 @@ drawbar(Monitor *m)
 					continue;
 				tw = MIN(m->sel == c ? w : mw, TEXTW(c->name));
 
-				drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : SchemeNorm]);
+				drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : (c->hidden ? SchemeHidden : SchemeNorm)]);
 				if (tw > 0) /* trap special handling of 0 in drw_text */
 					drw_text(drw, x, 0, tw, bh, lrpad / 2, c->name, 0);
 				if (c->isfloating)
@@ -708,8 +708,8 @@ expose(XEvent *e)
 void
 focus(Client *c)
 {
-	if (!c || !ISVISIBLE(c))
-		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
+	if (!c || !ISVISIBLE(c) || ISHIDDEN(c))
+		for (c = selmon->stack; c && (!ISVISIBLE(c) || ISHIDDEN(c)); c = c->snext);
 	if (selmon->sel && selmon->sel != c)
 		unfocus(selmon->sel, 0);
 	if (c) {
@@ -776,16 +776,16 @@ focusstack(const Arg *arg)
 	if (!selmon->sel)
 		return;
 	if (arg->i > 0) {
-		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+		for (c = selmon->sel->next; c && (!ISVISIBLE(c) || ISHIDDEN(c)); c = c->next);
 		if (!c)
-			for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
+			for (c = selmon->clients; c && (!ISVISIBLE(c) || ISHIDDEN(c)); c = c->next);
 	} else {
 		for (i = selmon->clients; i != selmon->sel; i = i->next)
-			if (ISVISIBLE(i))
+			if (ISVISIBLE(i) && !ISHIDDEN(i))
 				c = i;
 		if (!c)
 			for (; i; i = i->next)
-				if (ISVISIBLE(i))
+				if (ISVISIBLE(i) && !ISHIDDEN(i))
 					c = i;
 	}
 	if (c) {
@@ -1067,21 +1067,6 @@ maprequest(XEvent *e)
 }
 
 void
-monocle(Monitor *m)
-{
-	unsigned int n = 0;
-	Client *c;
-
-	for (c = m->clients; c; c = c->next)
-		if (ISVISIBLE(c))
-			n++;
-	if (n > 0) /* override layout symbol */
-		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
-	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
-}
-
-void
 motionnotify(XEvent *e)
 {
 	static Monitor *mon = NULL;
@@ -1161,7 +1146,7 @@ movemouse(const Arg *arg)
 Client *
 nexttiled(Client *c)
 {
-	for (; c && (c->isfloating || !ISVISIBLE(c)); c = c->next);
+	for (; c && (c->isfloating || !ISVISIBLE(c) || ISHIDDEN(c)); c = c->next);
 	return c;
 }
 
@@ -1376,7 +1361,7 @@ restack(Monitor *m)
 		wc.stack_mode = Below;
 		wc.sibling = m->barwin;
 		for (c = m->stack; c; c = c->snext)
-			if (!c->isfloating && ISVISIBLE(c)) {
+			if (!c->isfloating && ISVISIBLE(c) && !ISHIDDEN(c)) {
 				XConfigureWindow(dpy, c->win, CWSibling|CWStackMode, &wc);
 				wc.sibling = c->win;
 			}
@@ -1656,7 +1641,7 @@ showhide(Client *c)
 {
 	if (!c)
 		return;
-	if (ISVISIBLE(c)) {
+	if (ISVISIBLE(c) && !ISHIDDEN(c)) {
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if ((c->mon->pertag->layout[c->mon->pertag->curtag]->arrange == layout_float || c->isfloating) && !c->isfullscreen)
@@ -2253,9 +2238,14 @@ wintomon(Window w)
 void
 togglehidden(const Arg *arg)
 {
-    Client *c = selmon->sel;
-	if (!c)
-		return;
+    Client *c;
+
+    if (arg->v)
+        c = (Client*)arg->v;
+    else
+        c = selmon->sel;
+    if (!c)
+        return;
     c->hidden = !c->hidden;
 	XSetWindowBorder(dpy, c->win, scheme[c->hidden ? SchemeHidden : SchemeNorm][ColBorder].pixel);
 	focus(NULL);
@@ -2352,19 +2342,19 @@ movestack(const Arg *arg) {
 
 	if(arg->i > 0) {
 		/* find the client after selmon->sel */
-		for(c = selmon->sel->next; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
+		for(c = selmon->sel->next; c && (!ISVISIBLE(c) || c->isfloating || ISHIDDEN(c)); c = c->next);
 		if(!c)
-			for(c = selmon->clients; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
+			for(c = selmon->clients; c && (!ISVISIBLE(c) || c->isfloating || ISHIDDEN(c)); c = c->next);
 
 	}
 	else {
 		/* find the client before selmon->sel */
 		for(i = selmon->clients; i != selmon->sel; i = i->next)
-			if(ISVISIBLE(i) && !i->isfloating)
+			if(ISVISIBLE(i) && !i->isfloating && !ISHIDDEN(i))
 				c = i;
 		if(!c)
 			for(; i; i = i->next)
-				if(ISVISIBLE(i) && !i->isfloating)
+				if(ISVISIBLE(i) && !i->isfloating && !ISHIDDEN(i))
 					c = i;
 	}
 	/* find the client before selmon->sel and c */
