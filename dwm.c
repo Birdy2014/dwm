@@ -1097,6 +1097,7 @@ movemouse(const Arg *arg)
 	if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
 		return;
 	restack(selmon);
+    XRaiseWindow(dpy, c->win);
 	ocx = c->x;
 	ocy = c->y;
 	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
@@ -1288,6 +1289,7 @@ resizemouse(const Arg *arg)
 	if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
 		return;
 	restack(selmon);
+    XRaiseWindow(dpy, c->win);
 	ocx = c->x;
 	ocy = c->y;
 	ocx2 = c->x + c->w;
