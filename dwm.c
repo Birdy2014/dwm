@@ -1138,10 +1138,14 @@ movemouse(const Arg *arg)
 	} while (ev.type != ButtonRelease);
 	XUngrabPointer(dpy, CurrentTime);
 	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
-		sendmon(c, m);
-		selmon = m;
-		focus(NULL);
-	}
+        int x = c->x;
+        int y = c->y;
+        sendmon(c, m);
+        selmon = m;
+        if (selmon->pertag->layout[selmon->pertag->curtag]->arrange == layout_float || c->isfloating)
+            resize(c, x, y, c->w, c->h, 1); // Reset fx and fy
+        focus(NULL);
+    }
 }
 
 Client *
@@ -1178,6 +1182,8 @@ propertynotify(XEvent *e)
 			if (!c->isfloating && (XGetTransientForHint(dpy, c->win, &trans)) &&
 				(c->isfloating = (wintoclient(trans)) != NULL))
 				arrange(c->mon);
+            if (c->isfloating && c == selmon->sel)
+                XRaiseWindow(dpy, c->win);
 			break;
 		case XA_WM_NORMAL_HINTS:
 			updatesizehints(c);
@@ -1236,14 +1242,14 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	wc.border_width = c->bw;
 
 	/* Get number of clients for the selected monitor */
-	for (n = 0, nbc = nexttiled(selmon->clients); nbc; nbc = nexttiled(nbc->next), n++);
+	for (n = 0, nbc = nexttiled(c->mon->clients); nbc; nbc = nexttiled(nbc->next), n++);
 
 	/* Do nothing if layout is floating */
-	if (c->isfloating || selmon->pertag->layout[selmon->pertag->curtag]->arrange == layout_float) {
+	if (c->isfloating || c->mon->pertag->layout[c->mon->pertag->curtag]->arrange == layout_float) {
 		gapincr = gapoffset = 0;
 	} else {
 		/* Remove border and gap if layout is monocle or only one client */
-		if (selmon->pertag->layout[selmon->pertag->curtag]->arrange == monocle || n <= 1) {
+		if (c->mon->pertag->layout[c->mon->pertag->curtag]->arrange == monocle || n <= 1) {
 			gapoffset = 0;
 			gapincr = -2 * borderpx;
 			wc.border_width = 0;
@@ -1420,6 +1426,10 @@ sendmon(Client *c, Monitor *m)
 {
 	if (c->mon == m)
 		return;
+    for (unsigned int tag = 0; tag < 9; tag++) {
+        c->fx[tag] = c->fx[tag] - c->mon->mx + m->mx;
+        c->fy[tag] = c->fy[tag] - c->mon->my + m->my;
+    }
 	unfocus(c, 1);
 	detach(c);
 	detachstack(c);
@@ -1427,7 +1437,7 @@ sendmon(Client *c, Monitor *m)
 	c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1); /* assign tags of target monitor */
 	attach(c);
 	attachstack(c);
-	focus(NULL);
+	focus(c);
 	arrange(NULL);
 }
 
@@ -1715,9 +1725,10 @@ togglefloating(const Arg *arg)
 	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-	if (selmon->sel->isfloating)
-		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
-			selmon->sel->w, selmon->sel->h, 0);
+    if (selmon->sel->isfloating) {
+        resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h, 0);
+        XRaiseWindow(dpy, selmon->sel->win);
+    }
 	arrange(selmon);
 }
 
