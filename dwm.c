@@ -303,8 +303,7 @@ buttonpress(XEvent *e)
 				} while (ev->x > x && (c = c->next));
 
 				click = ClkWinTitle;
-				if (m->pertag->layout[m->pertag->curtag]->arrange == layout_float)
-					arg.v = c;
+                arg.v = c;
 			}
 		}
 	} else if ((c = wintoclient(ev->window))) {
@@ -611,16 +610,9 @@ drawbar(Monitor *m)
 
     // Draw window names
 	if ((w = m->ww - sw - x) > bh) {
-		if (n > 0 && m->pertag->layout[m->pertag->curtag]->arrange != layout_float) {
-			if (m->sel) {
-				drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-				drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-				if (m->sel->isfloating)
-					drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-			}
-		} else if (n > 0) {
+		if (n > 0) {
 			tw = TEXTW(m->sel->name) + lrpad;
-			mw = (tw >= w || n == 1) ? 0 : (w - tw) / (n - 1);
+			mw = (tw >= w || n == 1) ? 0 : (w - tw - TEXTW(separator)) / (n - 1);
 
 			i = 0;
 			for (c = m->clients; c; c = c->next) {
@@ -628,7 +620,7 @@ drawbar(Monitor *m)
 					continue;
 				tw = TEXTW(c->name);
 				if(tw < mw)
-					ew += (mw - tw);
+					ew += (mw - tw - TEXTW(separator));
 				else
 					i++;
 			}
@@ -648,8 +640,8 @@ drawbar(Monitor *m)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
 
 				drw_setscheme(drw, scheme[SchemeNorm]);
-                if (i < n - 1) {
-                    drw_text(drw, x + tw, 0, tw, bh, lrpad / 2, separator, 0);
+                if (i < n - 1 && tw < w) {
+                    drw_text(drw, x + tw, 0, TEXTW(separator), bh, lrpad / 2, separator, 0);
                     x += TEXTW(separator);
                     w -= TEXTW(separator);
                 }
@@ -658,7 +650,8 @@ drawbar(Monitor *m)
                 i++;
 			}
 			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_rect(drw, x, 0, w, bh, 1, 1);
+            if (w > 0)
+                drw_rect(drw, x, 0, w, bh, 1, 1);
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
  			drw_rect(drw, x, 0, w, bh, 1, 1);
