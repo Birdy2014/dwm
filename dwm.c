@@ -386,7 +386,7 @@ clientmessage(XEvent *e)
 			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
 				|| (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->isfullscreen)));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
-		if (c != selmon->sel && !c->isurgent)
+		if (!ISVISIBLE(c) && !c->isurgent)
 			seturgent(c, 1);
 	}
 }
@@ -631,7 +631,7 @@ drawbar(Monitor *m)
 			for (c = m->clients; c; c = c->next) {
 				if (!ISVISIBLE(c))
 					continue;
-				tw = MIN(m->sel == c ? w : mw, TEXTW(c->name));
+				tw = MIN(m->sel == c || n == 1 ? w : mw, TEXTW(c->name));
 
 				drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : (c->hidden ? SchemeHidden : SchemeNorm)]);
 				if (tw > 0) /* trap special handling of 0 in drw_text */
@@ -708,8 +708,6 @@ focus(Client *c)
 	if (c) {
 		if (c->mon != selmon)
 			selmon = c->mon;
-		if (c->isurgent)
-			seturgent(c, 0);
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
@@ -719,8 +717,8 @@ focus(Client *c)
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
-	selmon->sel = c;
-	drawbars();
+    selmon->sel = c;
+    drawbars();
 }
 
 void
@@ -1773,6 +1771,11 @@ toggleview(const Arg *arg)
 
 	focus(NULL);
 	arrange(selmon);
+
+    // Update urgent status
+    for (Client* c = selmon->clients; c; c = c->next)
+        if (ISVISIBLE(c) && c->isurgent)
+            seturgent(c, 0);
 }
 
 void
@@ -2105,6 +2108,11 @@ view(const Arg *arg)
 
 	focus(NULL);
 	arrange(selmon);
+
+    // Update urgent status
+    for (Client* c = selmon->clients; c; c = c->next)
+        if (ISVISIBLE(c) && c->isurgent)
+            seturgent(c, 0);
 }
 
 pid_t
@@ -2305,7 +2313,9 @@ xerrorstart(Display *dpy, XErrorEvent *ee)
 void
 zoom(const Arg *arg)
 {
-	Client *c = selmon->sel;
+	Client *c = (Client*)arg->v;;
+    if (!c)
+        c = selmon->sel;
 
 	if (!selmon->pertag->layout[selmon->pertag->curtag]->arrange
 	|| (selmon->sel && selmon->sel->isfloating))
