@@ -3,12 +3,12 @@
 
 typedef struct Monitor Monitor;
 
-void tile(Monitor *);
-void centeredmaster(Monitor *m);
-void centeredfloatingmaster(Monitor *m);
-void dwindle(Monitor *mon);
-void layout_float(Monitor *mon);
-void monocle(Monitor *m);
-void deck(Monitor *m);
+void tile(Monitor*);
+void centeredmaster(Monitor* m);
+void centeredfloatingmaster(Monitor* m);
+void dwindle(Monitor* mon);
+void layout_float(Monitor* mon);
+void monocle(Monitor* m);
+void deck(Monitor* m);
 
 #endif
