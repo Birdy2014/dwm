@@ -182,8 +182,8 @@ const Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkClientWin,         0,              8,              movemouse,      {0} },
-	{ ClkClientWin,         0,              9,              resizemouse,    {0} }, // Doesn't work?!
+	{ ClkClientWin,         0,              8,              resizemouse,    {0} },
+	{ ClkClientWin,         0,              9,              movemouse,      {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },

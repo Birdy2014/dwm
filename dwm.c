@@ -254,7 +254,6 @@ void buttonpress(XEvent* e) {
     Client* c;
     Monitor* m;
     XButtonPressedEvent* ev = &e->xbutton;
-    printf("Pressed Button %i\n", ev->button);
 
     click = ClkRootWin;
     /* focus monitor if necessary */
@@ -1209,14 +1208,23 @@ void resizemouse(const Arg* arg) {
     ocy  = c->y;
     ocx2 = c->x + c->w;
     ocy2 = c->y + c->h;
-    if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
-            None, cursor[CurResize]->cursor, CurrentTime)
-        != GrabSuccess)
-        return;
     if (!XQueryPointer(dpy, c->win, &dummy, &dummy, &di, &di, &nx, &ny, &dui))
         return;
-    horizcorner = nx < c->w / 2;
-    vertcorner  = ny < c->h / 2;
+    horizcorner  = nx < c->w / 2;
+    vertcorner   = ny < c->h / 2;
+    int cursorNr = CurResizeBottomLeft;
+    if (horizcorner && vertcorner)
+        cursorNr = CurResizeTopLeft;
+    else if (!horizcorner && vertcorner)
+        cursorNr = CurResizeTopRight;
+    else if (horizcorner && !vertcorner)
+        cursorNr = CurResizeBottomLeft;
+    else if (!horizcorner && !vertcorner)
+        cursorNr = CurResizeBottomRight;
+    if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
+            None, cursor[cursorNr]->cursor, CurrentTime)
+        != GrabSuccess)
+        return;
     XWarpPointer(dpy, None, c->win, 0, 0, 0, 0,
         horizcorner ? (-c->bw) : (c->w + c->bw - 1),
         vertcorner ? (-c->bw) : (c->h + c->bw - 1));
@@ -1381,6 +1389,7 @@ void setfocus(Client* c) {
             XA_WINDOW, 32, PropModeReplace,
             (unsigned char*)&(c->win), 1);
     }
+    setclientstate(c, NormalState);
     sendevent(c, wmatom[WMTakeFocus]);
 }
 
@@ -1490,9 +1499,12 @@ void setup(void) {
     netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
     netatom[NetClientList]         = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
     /* init cursors */
-    cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
-    cursor[CurResize] = drw_cur_create(drw, XC_sizing);
-    cursor[CurMove]   = drw_cur_create(drw, XC_fleur);
+    cursor[CurNormal]            = drw_cur_create(drw, XC_left_ptr);
+    cursor[CurResizeTopLeft]     = drw_cur_create(drw, XC_top_left_corner);
+    cursor[CurResizeTopRight]    = drw_cur_create(drw, XC_top_right_corner);
+    cursor[CurResizeBottomLeft]  = drw_cur_create(drw, XC_bottom_left_corner);
+    cursor[CurResizeBottomRight] = drw_cur_create(drw, XC_bottom_right_corner);
+    cursor[CurMove]              = drw_cur_create(drw, XC_fleur);
     /* init appearance */
     scheme = ecalloc(ncolors, sizeof(Clr*));
     for (i = 0; i < ncolors; i++)

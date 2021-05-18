@@ -40,7 +40,7 @@
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
 /* enums */
-enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+enum { CurNormal, CurResizeTopLeft, CurResizeTopRight, CurResizeBottomLeft, CurResizeBottomRight, CurMove, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel, SchemeHidden }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
