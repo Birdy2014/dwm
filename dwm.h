@@ -46,8 +46,9 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
-enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+enum { ClkTagBar, ClkLtSymbol, ClkAttach, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+enum { AttachFront, AttachStack, AttachEnd, AttachModes };
 // clang-format on
 
 typedef union {
@@ -119,6 +120,7 @@ struct Monitor {
     Monitor* next;
     Window barwin;
     Pertag* pertag;
+    int attachmode;
 };
 
 typedef struct {
@@ -183,7 +185,6 @@ void maprequest(XEvent* e);
 void motionnotify(XEvent* e);
 void movemouse(const Arg* arg);
 Client* nexttiled(Client* c);
-void pop(Client*);
 void propertynotify(XEvent* e);
 void quit(const Arg* arg);
 Monitor* recttomon(int x, int y, int w, int h);
@@ -195,6 +196,7 @@ void run(void);
 void scan(void);
 int sendevent(Client* c, Atom proto);
 void sendmon(Client* c, Monitor* m);
+void setattach(const Arg* arg);
 void setclientstate(Client* c, long state);
 void setfocus(Client* c);
 void setfullscreen(Client* c, int fullscreen);

@@ -40,6 +40,11 @@ const char *colors[][3]      = {
 };
 const int ncolors = LENGTH(colors);
 const char *separator = "|";
+const char *attachsymbols[] = {
+    [AttachFront] = "front",
+    [AttachStack] = "stack",
+    [AttachEnd]   = "end  ",
+};
 
 /* tagging */
 const char *tags[] = { "", "", "", "", "", "", "", "8", "9" };
@@ -134,6 +139,7 @@ const Key keys[] = {
 	{ MODKEY,                       XK_o,                     setlayout,        {.v = &layouts[6]} },
 	{ MODKEY,                       XK_space,                 togglefloating,   {0} },
 	{ MODKEY|ShiftMask,             XK_f,                     togglefullscr,    {0} },
+	{ MODKEY,                       XK_a,                     setattach,        {.i = -1} },
     // monitors
 	{ MODKEY,                       XK_comma,                 focusmon,         {.i = -1 } },
 	{ MODKEY,                       XK_period,                focusmon,         {.i = +1 } },
@@ -175,6 +181,7 @@ const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+    { ClkAttach,            0,              Button1,        setattach,      {.i = -1} },
 	{ ClkWinTitle,          0,              Button1,        focusClientArg, {0} },
 	{ ClkWinTitle,          0,              Button3,        togglehidden,   {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },

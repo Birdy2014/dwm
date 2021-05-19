@@ -12,15 +12,16 @@ extern const unsigned int snap;
 extern const int swallowfloating;
 extern const int showbar;
 extern const int topbar;
-extern const char *fonts[];
+extern const char* fonts[];
 extern const int nfonts;
 extern const char dmenufont[];
-extern const char *colors[][3];
+extern const char* colors[][3];
 extern const int ncolors;
-extern const char *separator;
+extern const char* separator;
+extern const char* attachsymbols[];
 
 /* tagging */
-extern const char *tags[];
+extern const char* tags[];
 extern const int deflt[];
 extern const int ntags;
 
@@ -34,6 +35,7 @@ extern const int resizehints;
 
 extern const Layout layouts[];
 
+// clang-format off
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
@@ -44,11 +46,12 @@ extern const Layout layouts[];
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+// clang-format on
 
 /* commands */
 extern char dmenumon[2];
-extern const char *dmenucmd[];
-extern const char *termcmd[];
+extern const char* dmenucmd[];
+extern const char* termcmd[];
 
 extern const Key keys[];
 extern const int nkeys;

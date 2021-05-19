@@ -188,8 +188,29 @@ void arrangemon(Monitor* m) {
 }
 
 void attach(Client* c) {
-    c->next         = c->mon->clients;
-    c->mon->clients = c;
+    Client* prev;
+    int i;
+    int attachmode = nexttiled(selmon->clients) ? selmon->attachmode : AttachFront;
+    switch (attachmode) {
+    case AttachFront:
+        c->next         = c->mon->clients;
+        c->mon->clients = c;
+        break;
+    case AttachStack:
+        i = 1;
+        for (prev = nexttiled(selmon->clients); prev->next && i < selmon->nmaster; prev = nexttiled(prev->next)) {
+            i++;
+        }
+        c->next    = prev->next;
+        prev->next = c;
+        break;
+    case AttachEnd:
+        for (prev = nexttiled(selmon->clients); nexttiled(prev->next); prev = nexttiled(prev->next))
+            ;
+        c->next    = prev->next;
+        prev->next = c;
+        break;
+    }
 }
 
 void attachstack(Client* c) {
@@ -254,6 +275,7 @@ void buttonpress(XEvent* e) {
     Client* c;
     Monitor* m;
     XButtonPressedEvent* ev = &e->xbutton;
+    unsigned int attachw    = TEXTW(attachsymbols[selmon->attachmode]);
 
     click = ClkRootWin;
     /* focus monitor if necessary */
@@ -272,10 +294,12 @@ void buttonpress(XEvent* e) {
             arg.ui = 1 << i;
         } else if (ev->x < x + blw)
             click = ClkLtSymbol;
+        else if (ev->x < x + blw + attachw)
+            click = ClkAttach;
         else if (ev->x > selmon->ww - TEXTW(stext))
             click = ClkStatusText;
         else {
-            x += blw;
+            x += blw + attachw;
             c = m->clients;
 
             if (c) {
@@ -483,6 +507,8 @@ createmon(void) {
         m->pertag->layout[i] = &layouts[deflt[i]];
     }
 
+    m->attachmode = AttachFront;
+
     return m;
 }
 
@@ -573,6 +599,10 @@ void drawbar(Monitor* m) {
     w = blw = TEXTW(m->ltsymbol);
     drw_setscheme(drw, scheme[SchemeNorm]);
     x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+
+    // Draw attach mode
+    w = TEXTW(attachsymbols[m->attachmode]);
+    x = drw_text(drw, x, 0, w, bh, lrpad / 2, attachsymbols[m->attachmode], 0);
 
     // Draw window names
     if ((w = m->ww - sw - x) > bh) {
@@ -1071,13 +1101,6 @@ nexttiled(Client* c) {
     return c;
 }
 
-void pop(Client* c) {
-    detach(c);
-    attach(c);
-    focus(c);
-    arrange(c->mon);
-}
-
 void propertynotify(XEvent* e) {
     Client* c;
     Window trans;
@@ -1350,6 +1373,14 @@ void sendmon(Client* c, Monitor* m) {
     attachstack(c);
     focus(c);
     arrange(NULL);
+}
+
+void setattach(const Arg* arg) {
+    int attachmode = selmon->attachmode + 1;
+    if (arg->i >= 0)
+        attachmode = arg->i;
+    selmon->attachmode = attachmode % AttachModes;
+    drawbars();
 }
 
 void setclientstate(Client* c, long state) {
@@ -2169,7 +2200,13 @@ void zoom(const Arg* arg) {
     if (c == nexttiled(selmon->clients))
         if (!c || !(c = nexttiled(c->next)))
             return;
-    pop(c);
+    int attachmode     = selmon->attachmode;
+    selmon->attachmode = AttachFront;
+    detach(c);
+    attach(c);
+    focus(c);
+    arrange(c->mon);
+    selmon->attachmode = attachmode;
 }
 
 int main(int argc, char* argv[]) {
