@@ -163,7 +163,7 @@ const Key keys[] = {
     { 0,                            XF86XK_AudioRaiseVolume,  spawn,            SHCMD("pamixer -i 5 && dwm-statusbar refresh") },
     { 0,                            XF86XK_AudioPlay,         spawn,            SHCMD("playerctl play-pause") },
     { 0,                            XF86XK_AudioPrev,         spawn,            SHCMD("playerctl previous") },
-    { 0,                            XF86XK_AudioNext,         spawn,            SHCMD("playerctl previous") },
+    { 0,                            XF86XK_AudioNext,         spawn,            SHCMD("playerctl next") },
     { 0,                            XF86XK_MonBrightnessDown, spawn,            SHCMD("xbacklight -dec 10") },
     { 0,                            XF86XK_MonBrightnessUp,   spawn,            SHCMD("xbacklight -inc 10") },
 };
