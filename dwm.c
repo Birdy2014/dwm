@@ -629,7 +629,7 @@ void drawbar(Monitor* m) {
                     continue;
                 tw = MIN(m->sel == c || n == 1 ? w : mw, TEXTW(c->name));
 
-                drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : (c->hidden ? SchemeHidden : SchemeNorm)]);
+                drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : (c->hidden ? SchemeHidden : SchemeNotSel)]);
                 if (tw > 0) /* trap special handling of 0 in drw_text */
                     drw_text(drw, x, 0, tw, bh, lrpad / 2, c->name, 0);
                 if (c->isfloating)
@@ -1692,13 +1692,13 @@ void toggleview(const Arg* arg) {
     selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
     selmon->mfact   = selmon->pertag->mfacts[selmon->pertag->curtag];
 
-    focus(NULL);
-    arrange(selmon);
-
     // Update urgent status
     for (Client* c = selmon->clients; c; c = c->next)
         if (ISVISIBLE(c) && c->isurgent)
             seturgent(c, 0);
+
+    focus(NULL);
+    arrange(selmon);
 }
 
 void unfocus(Client* c, int setfocus) {
@@ -2004,13 +2004,13 @@ void view(const Arg* arg) {
     selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
     selmon->mfact   = selmon->pertag->mfacts[selmon->pertag->curtag];
 
-    focus(NULL);
-    arrange(selmon);
-
     // Update urgent status
     for (Client* c = selmon->clients; c; c = c->next)
         if (ISVISIBLE(c) && c->isurgent)
             seturgent(c, 0);
+
+    focus(NULL);
+    arrange(selmon);
 }
 
 pid_t winpid(Window w) {

@@ -41,7 +41,7 @@
 
 /* enums */
 enum { CurNormal, CurResizeTopLeft, CurResizeTopRight, CurResizeBottomLeft, CurResizeBottomRight, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeHidden }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeHidden, SchemeNotSel }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */

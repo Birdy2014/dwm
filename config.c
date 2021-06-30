@@ -27,14 +27,17 @@ const char col_gray3[]         = "#bbbbbb";
 const char col_gray4[]         = "#eeeeee";
 const char col_cyan[]          = "#005577";
 const char col_green[]         = "#10893E";
+const char col_gruvbox_dark0_hard[] = "#1d2021";
 const char col_gruvbox_dark0[] = "#282828";
+const char col_gruvbox_dark1[] = "#3c3836";
 const char col_gruvbox_dark2[] = "#504945";
 const char col_gruvbox_dark3[] = "#665c54";
 const char col_gruvbox_dark4[] = "#7c6f64";
 const char col_gruvbox_green[] = "#98971a";
 const char *colors[][3]      = {
 	/*                 fg                 bg                 border   */
-	[SchemeNorm]   = { col_gray3,         col_gruvbox_dark0, col_gray2  },
+	[SchemeNorm]   = { col_gray3,         col_gruvbox_dark0_hard, col_gray2  },
+    [SchemeNotSel] = { col_gray3,         col_gruvbox_dark0, col_gray2  },
 	[SchemeHidden] = { col_gruvbox_dark4, col_gray1,         col_cyan   },
 	[SchemeSel]    = { col_gray4,         col_gruvbox_dark2, col_gruvbox_green  },
 };
