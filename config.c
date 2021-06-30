@@ -187,7 +187,7 @@ const Button buttons[] = {
     { ClkAttach,            0,              Button1,        setattach,      {.i = -1} },
 	{ ClkWinTitle,          0,              Button1,        focusClientArg, {0} },
 	{ ClkWinTitle,          0,              Button3,        togglehidden,   {0} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	{ ClkWinTitle,          0,              Button2,        closewindow,    {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
