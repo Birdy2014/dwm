@@ -36,7 +36,7 @@ LDFLAGS  = ${LIBS}
 # compiler and linker
 CC = gcc
 
-SRC = drw.c dwm.c util.c layouts.c config.c
+SRC = drw.c dwm.c util.c layouts.c config.c bar.c
 
 all: dwm
 

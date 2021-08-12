@@ -51,12 +51,13 @@ enum { ClkTagBar, ClkLtSymbol, ClkAttach, ClkStatusText, ClkWinTitle,
 enum { AttachFront, AttachStack, AttachEnd, AttachModes };
 // clang-format on
 
-typedef union {
+union Arg {
     int i;
     unsigned int ui;
     float f;
     const void* v;
-} Arg;
+};
+typedef union Arg Arg;
 
 typedef struct {
     unsigned int click;
@@ -124,7 +125,7 @@ struct Monitor {
 };
 
 typedef struct {
-    const char* class;
+    const char* window_class;
     const char* instance;
     const char* title;
     unsigned int tags;
@@ -161,12 +162,9 @@ void destroynotify(XEvent* e);
 void detach(Client* c);
 void detachstack(Client* c);
 Monitor* dirtomon(int dir);
-void drawbar(Monitor* m);
-void drawbars(void);
 void enternotify(XEvent* e);
 void expose(XEvent* e);
 void focus(Client* c);
-void focusClientArg(const Arg* arg);
 void focusin(XEvent* e);
 void focusmon(const Arg* arg);
 void focusstack(const Arg* arg);
@@ -177,7 +175,8 @@ void grabbuttons(Client* c, int focused);
 void grabkeys(void);
 void incnmaster(const Arg* arg);
 void keypress(XEvent* e);
-void killclient(const Arg* arg);
+void killclient(Client* c);
+void killselected(const Arg* arg);
 void closewindow(const Arg* arg);
 void manage(Window w, XWindowAttributes* wa);
 void mappingnotify(XEvent* e);
@@ -210,7 +209,6 @@ void sigchld(int unused);
 void spawn(const Arg* arg);
 void tag(const Arg* arg);
 void tagmon(const Arg* arg);
-void togglebar(const Arg* arg);
 void togglefloating(const Arg* arg);
 void togglefullscr(const Arg* arg);
 void toggletag(const Arg* arg);
@@ -218,8 +216,6 @@ void toggleview(const Arg* arg);
 void unfocus(Client* c, int setfocus);
 void unmanage(Client* c, int destroyed);
 void unmapnotify(XEvent* e);
-void updatebarpos(Monitor* m);
-void updatebars(void);
 void updateclientlist(void);
 int updategeom(void);
 void updatenumlockmask(void);

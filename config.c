@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "dwm.h"
+#include "bar.h"
 #include "layouts.h"
 #include <X11/XF86keysym.h>
 
@@ -42,7 +43,7 @@ const char *colors[][3]      = {
 	[SchemeSel]    = { col_gray4,         col_gruvbox_dark2, col_gruvbox_green  },
 };
 const int ncolors = LENGTH(colors);
-const char *separator = "|";
+const char *separator = "│";
 const char *attachsymbols[] = {
     [AttachFront] = "front",
     [AttachStack] = "stack",
@@ -128,7 +129,7 @@ const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_l,                     setcfact,         {.f = +0.20} },
 	{ MODKEY|ShiftMask,             XK_o,                     setcfact,         {.f =  0.00} },
 	{ MODKEY,                       XK_Return,                zoom,             {0} },
-	{ MODKEY|ShiftMask,             XK_q,                     killclient,       {0} },
+	{ MODKEY|ShiftMask,             XK_q,                     killselected,       {0} },
 	{ MODKEY,                       XK_q,                     closewindow,      {0} },
     { MODKEY,                       XK_v,                     togglehidden,     {0} },
     { MODKEY|ShiftMask,             XK_v,                     toggleshowhidden, {0} },
@@ -185,9 +186,9 @@ const Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
     { ClkAttach,            0,              Button1,        setattach,      {.i = -1} },
-	{ ClkWinTitle,          0,              Button1,        focusClientArg, {0} },
+	{ ClkWinTitle,          0,              Button1,        bar_focusclient, {0} },
 	{ ClkWinTitle,          0,              Button3,        togglehidden,   {0} },
-	{ ClkWinTitle,          0,              Button2,        closewindow,    {0} },
+	{ ClkWinTitle,          0,              Button2,        bar_closewindow,    {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
