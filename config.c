@@ -11,15 +11,9 @@
 const unsigned int borderpx  = 1;        /* border pixel of windows */
 const unsigned int gappx     = 5;        /* gaps between windows */
 const unsigned int snap      = 5;        /* snap pixel */
-const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 const int showbar            = 1;        /* 0 means no bar */
 const int topbar             = 1;        /* 0 means bottom bar */
-const char *fonts[]          = {
-                                        "Font Awesome 5 Free:size=10",
-                                        "Font Awesome 5 Brands:size=10",
-                                        "Jetbrains Mono:size=10",
-                                        "monospace:size=10"
-                                        };
+const char *fonts[]          = { "JetBrains Mono Nerd Font:size=10" };
 const int nfonts = LENGTH(fonts);
 const char dmenufont[]         = "Jetbrains Mono:size=10";
 const char col_gray1[]         = "#202020";
@@ -60,17 +54,15 @@ const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class         instance title           tags mask     isfloating    isterminal noswallow   monitor */
-	{ "Steam",          0,    0,              1 << 4,       0,            0,         0,          0 },
-	{ "discord",        0,    0,              1 << 6,       0,            0,         0,          -1 },
-	{ "Element",        0,    0,              1 << 6,       0,            0,         0,          -1 },
-	{ "code-oss",       0,    0,              1 << 2,       0,            0,         0,          0 },
-	{ "Thunderbird",    0,    0,              1 << 5,       0,            0,         0,          0 },
-	{ "st-256color",    0,    0,              0,            0,            1,         0,          -1 },
-	{ 0,                0,    "Event Tester", 0,            0,            0,         1,          -1 },
-	{ "steam_app",      0,    "Origin",       1 << 4,       1,            0,         0,          -1 },
-	{ "zoom",           0,    0,              0,            1,            0,         0,          -1 },
-	{ "Birdy3d",        0,    0,              0,            1,            0,         1,          -1 },
+	/* class         instance title           tags mask     isfloating    monitor */
+	{ "Steam",          0,    0,              1 << 4,       0,            0 },
+	{ "discord",        0,    0,              1 << 6,       0,            -1 },
+	{ "Element",        0,    0,              1 << 6,       0,            -1 },
+	{ "code-oss",       0,    0,              1 << 2,       0,            0 },
+	{ "Thunderbird",    0,    0,              1 << 5,       0,            0 },
+	{ "steam_app",      0,    "Origin",       1 << 4,       1,            -1 },
+	{ "zoom",           0,    0,              0,            1,            -1 },
+	{ "Birdy3d",        0,    0,              0,            1,            -1 },
 };
 const int nrules = LENGTH(rules);
 
@@ -104,7 +96,7 @@ const Layout layouts[] = {
 /* commands */
 char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-const char *termcmd[]  = { "st", NULL };
+const char *termcmd[]  = { "kitty", NULL };
 
 const Key keys[] = {
 	/* modifier                     key                       function          argument */
@@ -114,8 +106,8 @@ const Key keys[] = {
 	{ MODKEY,                       XK_b,                     togglebar,        {0} },
 	{ MODKEY,                       XK_w,                     spawn,            SHCMD("firefox -p default-release") },
 	{ MODKEY,                       XK_y,                     spawn,            SHCMD("firefox -p Youtube") },
-	{ MODKEY,                       XK_n,                     spawn,            SHCMD("st -e ranger") },
-    { MODKEY,                       XK_c,                     spawn,            SHCMD("code") },
+	//{ MODKEY,                       XK_n,                     spawn,            SHCMD("kitty ranger") },
+	{ MODKEY,                       XK_n,                     spawn,            SHCMD("kitty lf") },
     // tiling
 	{ MODKEY|ShiftMask,             XK_j,                     movestack,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,                     movestack,        {.i = -1 } },
@@ -176,6 +168,9 @@ const Key keys[] = {
     { 0,                            XF86XK_AudioNext,         spawn,            SHCMD("playerctl next") },
     { 0,                            XF86XK_MonBrightnessDown, spawn,            SHCMD("xbacklight -dec 10") },
     { 0,                            XF86XK_MonBrightnessUp,   spawn,            SHCMD("xbacklight -inc 10") },
+	// Dunst
+	{ MODKEY|ControlMask,           XK_c,                     spawn,            SHCMD("dunstctl close") },
+	{ MODKEY|ControlMask,           XK_h,                     spawn,            SHCMD("dunstctl history-pop") },
 };
 const int nkeys = LENGTH(keys);
 

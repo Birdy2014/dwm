@@ -21,7 +21,8 @@ FREETYPEINC = /usr/include/freetype2
 
 # includes and libs
 INCS = -I${X11INC} -I${FREETYPEINC}
-LIBS = -L${X11LIB} -lX11 -lXinerama ${FREETYPELIBS} -lX11-xcb -lxcb -lxcb-res -lm
+# LIBS = -L${X11LIB} -lX11 -lXinerama ${FREETYPELIBS} -lX11-xcb -lxcb -lxcb-res -lm
+LIBS = -L${X11LIB} -lX11 -lXinerama ${FREETYPELIBS} -lm
 
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 -DVERSION=\"${VERSION}\"

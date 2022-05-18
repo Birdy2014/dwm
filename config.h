@@ -9,7 +9,6 @@
 extern const unsigned int borderpx;
 extern const unsigned int gappx;
 extern const unsigned int snap;
-extern const int swallowfloating;
 extern const int showbar;
 extern const int topbar;
 extern const char* fonts[];

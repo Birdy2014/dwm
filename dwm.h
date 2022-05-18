@@ -4,7 +4,6 @@
 #include "drw.h"
 #include <X11/Xatom.h>
 #include <X11/Xft/Xft.h>
-#include <X11/Xlib-xcb.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
@@ -22,7 +21,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <xcb/res.h>
 
 // clang-format off
 /* macros */
@@ -79,12 +77,10 @@ struct Client {
     int basew, baseh, incw, inch, maxw, maxh, minw, minh;
     int bw, oldbw;
     unsigned int tags;
-    int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, isterminal, noswallow;
+    int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
     int hidden;
-    pid_t pid;
     Client* next;
     Client* snext;
-    Client* swallowing;
     Monitor* mon;
     Window win;
 };
@@ -130,8 +126,6 @@ typedef struct {
     const char* title;
     unsigned int tags;
     int isfloating;
-    int isterminal;
-    int noswallow;
     int monitor;
 } Rule;
 
@@ -235,16 +229,9 @@ int xerrorstart(Display* dpy, XErrorEvent* ee);
 void zoom(const Arg* arg);
 void movestack(const Arg* arg);
 
-pid_t getparentprocess(pid_t p);
-int isdescprocess(pid_t p, pid_t c);
-Client* swallowingclient(Window w);
-Client* termforwin(const Client* c);
-pid_t winpid(Window w);
-
 /* variables */
 extern const char broken[];
 extern char stext[256];
-extern int scanner;
 extern int screen;
 extern int sw, sh; /* X display screen geometry width, height */
 extern int bh, blw; /* bar geometry */
@@ -260,7 +247,5 @@ extern Display* dpy;
 extern Drw* drw;
 extern Monitor *mons, *selmon;
 extern Window root, wmcheckwin;
-
-extern xcb_connection_t* xcon;
 
 #endif
